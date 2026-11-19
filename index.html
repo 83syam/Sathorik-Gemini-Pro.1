@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SATHORIK — Black-Gold Luxury Warung & POS System Pro</title>
+  <style>
+    :root {
+      --bg-main: #08080a;
+      --bg-card: rgba(20, 20, 24, 0.94);
+      --bg-soft: rgba(34, 34, 40, 0.78);
+      --text-main: #f4f4f6;
+      --text-muted: #a1a1aa;
+      --accent: #eab308;
+      --accent-soft: rgba(234, 179, 8, 0.14);
+      --accent-border: rgba(234, 179, 8, 0.38);
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --border: rgba(255, 255, 255, 0.09);
+      --radius: 14px;
+    }
+
+    body[data-theme="emerald-gold"] {
+      --bg-main: #05110d;
+      --bg-card: rgba(9, 25, 20, 0.94);
+      --bg-soft: rgba(15, 42, 34, 0.78);
+      --accent: #f59e0b;
+      --accent-soft: rgba(245, 158, 11, 0.14);
+      --accent-border: rgba(245, 158, 11, 0.38);
+    }
+
+    body[data-theme="royal-crimson"] {
+      --bg-main: #12060a;
+      --bg-card: rgba(28, 11, 17, 0.94);
+      --bg-soft: rgba(46, 17, 26, 0.78);
+      --accent: #fbbf24;
+      --accent-soft: rgba(251, 191, 36, 0.14);
+      --accent-border: rgba(251, 191, 36, 0.38);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top right, var(--accent-soft), transparent 45%), var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.5;
+      padding-bottom: 48px;
+    }
+
+    .container { max-width: 1240px; margin: 0 auto; padding: 14px; }
+    header.topbar {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      gap: 12px; padding: 14px 18px; border-radius: var(--radius);
+      background: var(--bg-card); border: 1px solid var(--accent-border);
+      margin-bottom: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-pyramid {
+      width: 42px; height: 42px; border-radius: 11px;
+      display: grid; place-items: center; font-weight: 900; color: #111;
+      background: linear-gradient(135deg, #fde047, var(--accent), #b45309);
+      box-shadow: 0 4px 14px rgba(234, 179, 8, 0.25);
+      font-size: 1.1rem;
+    }
+    .brand h1 { font-size: 1.15rem; letter-spacing: 0.6px; color: var(--accent); }
+    .brand small { display: block; color: var(--text-muted); font-size: 0.78rem; }
+
+    .controls-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    select, input, textarea, button {
+      font-family: inherit; font-size: 0.9rem; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-soft); color: var(--text-main);
+      padding: 8px 12px;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
+    button { cursor: pointer; font-weight: 600; transition: 0.15s ease; }
+    button:hover:not(:disabled) { filter: brightness(1.08); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--accent), #d97706);
+      color: #111; border: none;
+    }
+    .btn-outline { background: transparent; border-color: var(--accent-border); color: var(--accent); }
+    .btn-danger { background: rgba(239, 68, 68, 0.16); border-color: rgba(239, 68, 68, 0.45); color: #fca5a5; }
+    .btn-ok { background: rgba(34, 197, 94, 0.16); border-color: rgba(34, 197, 94, 0.45); color: #86efac; }
+    .btn-sm { padding: 5px 10px; font-size: 0.8rem; border-radius: 8px; }
+
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
+      backdrop-filter: blur(10px);
+    }
+    .card-title {
+      font-size: 1rem; font-weight: 700; color: var(--accent);
+      margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+
+    .portal-box { max-width: 480px; margin: 28px auto; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 12px; margin-bottom: 16px;
+    }
+    .stat {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px;
+    }
+    .stat label { font-size: 0.78rem; color: var(--text-muted); display: block; }
+    .stat strong { font-size: 1.15rem; color: var(--accent); }
+
+    .alert-banner {
+      border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;
+      border: 1px solid rgba(245, 158, 11, 0.45); background: rgba(245, 158, 11, 0.12);
+      display: none;
+    }
+    .alert-banner.show { display: block; }
+    .alert-banner.critical {
+      border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.14);
+    }
+
+    .nav-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .nav-pill { padding: 8px 14px; border-radius: 999px; background: var(--bg-soft); border: 1px solid var(--border); }
+    .nav-pill.active { background: var(--accent); color: #111; border-color: var(--accent); }
+
+    .grid-2 { display: grid; grid-template-columns: 1.45fr 1fr; gap: 16px; }
+    @media (max-width: 920px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 10px; }
+    .field label { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 4px; }
+    .field input, .field select, .field textarea { width: 100%; }
+
+    .products-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 10px; max-height: 560px; overflow-y: auto; padding-right: 4px;
+    }
+    .prod-card {
+      background: var(--bg-soft); border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+    }
+    .prod-card.low-stock { border-color: rgba(245, 158, 11, 0.65); }
+    .prod-card.out-stock { border-color: rgba(239, 68, 68, 0.75); opacity: 0.85; }
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700;
+    }
+    .badge-cat { background: var(--accent-soft); color: var(--accent); }
+    .badge-low { background: rgba(245, 158, 11, 0.2); color: #fcd34d; }
+    .badge-out { background: rgba(239, 68, 68, 0.22); color: #fca5a5; }
+    .badge-ok { background: rgba(34, 197, 94, 0.18); color: #86efac; }
+
+    .price-row { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); }
+    .price-row span strong { color: var(--text-main); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    th, td { padding: 9px 8px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { color: var(--accent); font-size: 0.76rem; text-transform: uppercase; }
+
+    .cart-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem;
+    }
+    .hidden { display: none !important; }
+
+    /* Modal Struk 58mm */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.78);
+      display: none; place-items: center; padding: 16px; z-index: 60;
+    }
+    .modal-backdrop.open { display: grid; }
+    .receipt-58 {
+      width: 272px; max-width: 100%; background: #fff; color: #111;
+      padding: 14px; border-radius: 8px; font-family: "Courier New", monospace; font-size: 12px;
+      max-height: 82vh; overflow-y: auto;
+    }
+    .receipt-58 hr { border: none; border-top: 1px dashed #333; margin: 8px 0; }
+    .receipt-line { display: flex; justify-content: space-between; gap: 6px; margin: 3px 0; }
+    .receipt-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: center; }
+
+    .hint-box {
+      font-size: 0.8rem; color: var(--text-muted); background: rgba(255,255,255,0.03);
+      border: 1px dashed var(--border); border-radius: 10px; padding: 9px 11px;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      .receipt-58, .receipt-58 * { visibility: visible; }
+      .receipt-58 { position: fixed; left: 0; top: 0; width: 58mm; padding: 4mm; max-height: none; overflow: visible; }
+      .receipt-actions { display: none; }
+    }
+  </style>
+</head>
+<body data-theme="black-gold">
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-pyramid">&#9650;</div>
+        <div>
+          <h1 id="headerStoreName">SATHORIK POS PRO</h1>
+          <small id="headerSubtitle">Black-Gold Warung, Retail &amp; Glosiran System</small>
+        </div>
+      </div>
+      <div class="controls-top">
+        <select id="themeSelect" aria-label="Pilih Tema">
+          <option value="black-gold">Tema: Black-Gold Luxury</option>
+          <option value="emerald-gold">Tema: Emerald-Gold</option>
+          <option value="royal-crimson">Tema: Royal Crimson-Gold</option>
+        </select>
+        <span id="activeSessionBadge" class="badge badge-cat hidden"></span>
+        <button id="logoutBtn" class="btn-outline btn-sm hidden">Keluar</button>
+      </div>
+    </header>
+
+    <!-- 1. PORTAL PRIVAT CREATOR (Hanya muncul via parameter URL rahasia, tersembunyi dari pedagang & pembeli) -->
+    <section id="creatorGateSection" class="card portal-box hidden">
+      <div class="card-title">Otorisasi Privat Kreator</div>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:12px;">
+        Jalur khusus pengelola utama untuk menerbitkan izin akses dan kode acak tunggal bagi Pedagang maupun Customer.
+      </p>
+      <div id="creatorLockAlert" class="alert-banner critical" style="margin-bottom:12px; font-size:0.83rem;"></div>
+      <div class="field" style="margin-bottom:12px;">
+        <label for="creatorPinInput">Kode Rahasia / PIN Kuat Kreator</label>
+        <input id="creatorPinInput" type="password" autocomplete="off" placeholder="Masukkan PIN Kuat Kreator..." />
+      </div>
+      <button id="creatorLoginBtn" type="button" class="btn-gold" style="width:100%;">Masuk Panel Kreator</button>
+    </section>
+
+    <!-- 2. PORTAL PRIVAT PEDAGANG (Hanya muncul via URL khusus ?gate=pedagang atau tautan undangan pedagang, tersembunyi dari pembeli) -->
+    <section id="pedagangGateSection" class="card portal-box hidden">
+      <div class="card-title">Portal Izin Akses Pedagang</div>
+      <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:12px;">
+        Masukkan kode akses tunggal yang diterbitkan resmi oleh Creator untuk membuka sistem kasir &amp; stok warung Anda.
+      </p>
+      <div class="field" style="margin-bottom:12px;">
+        <label for="pedagangCodeInput">Kode Akses Tunggal Pedagang</label>
+        <input id="pedagangCodeInput" type="text" placeholder="Contoh: PDG-8899" />
+      </div>
+      <button id="pedagangLoginBtn" type="button" class="btn-gold" style="width:100%; margin-bottom:10px;">Masuk Kasir Pedagang</button>
+      <div class="hint-box">
+        Belum memiliki kode akses? Silakan ajukan izin terlebih dahulu kepada Creator untuk mendapatkan satu kode acak aktif.
+      </div>
+    </section>
+
+    <!-- 3. GERBANG UTAMA / AKSES PEMBELI (Tidak menampilkan login Creator maupun login Pedagang) -->
+    <section id="buyerPortalSection" class="card portal-box hidden">
+      <div class="card-title" id="buyerPortalTitle">Katalog &amp; Pemesanan Online Warung</div>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;" id="buyerPortalDesc">
+        Langsung terhubung ke daftar barang warung. Masukkan Nomor WhatsApp Anda (atau lewati tanpa login) untuk mulai memesan dan menyimpan bon transaksi lengkap.
+      </p>
+      <div class="field" style="margin-bottom:10px;">
+        <label for="buyerWaLoginInput">Nomor WhatsApp Pembeli (Untuk Identitas &amp; Bon Transaksi)</label>
+        <input id="buyerWaLoginInput" type="tel" placeholder="Contoh: 081234567890" />
+      </div>
+      <div class="field" style="margin-bottom:12px;">
+        <label for="buyerAliasInput">Nama Pembeli (Opsional)</label>
+        <input id="buyerAliasInput" type="text" placeholder="Contoh: Ibu Sari / Pak Budi" />
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button id="buyerConnectBtn" type="button" class="btn-gold">Hubungkan No. WA &amp; Buka Katalog</button>
+        <button id="buyerDirectBrowseBtn" type="button" class="btn-outline">Akses Langsung Daftar Barang Tanpa Login</button>
+      </div>
+    </section>
+
+    <!-- PANEL CREATOR -->
+    <section id="creatorView" class="hidden">
+      <div class="card">
+        <div class="card-title">
+          <span>Keamanan Akses Kreator (Ganti PIN Kuat)</span>
+        </div>
+        <div class="form-grid" style="margin-bottom:6px;">
+          <div class="field">
+            <label for="newCreatorPinInput">PIN Kuat Baru (Min. 8 Karakter)</label>
+            <input id="newCreatorPinInput" type="password" autocomplete="off" placeholder="Contoh: Strk#92Lm!74Qp" />
+          </div>
+          <div class="field">
+            <label for="confirmCreatorPinInput">Konfirmasi PIN Kuat Baru</label>
+            <input id="confirmCreatorPinInput" type="password" autocomplete="off" placeholder="Ulangi PIN Kuat Baru..." />
+          </div>
+          <div class="field" style="display:flex; align-items:flex-end;">
+            <button id="updateCreatorPinBtn" type="button" class="btn-outline" style="width:100%;">Simpan PIN Kuat Baru</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Penerbitan Izin &amp; Kode Acak Tunggal (Creator Only)</span>
+        </div>
+        <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:12px;">
+          Setiap penerbitan hanya menghasilkan <strong>1 kode acak aktif</strong> untuk calon Pedagang atau Customer yang meminta izin. Pedagang tidak dapat melihat daftar kode lain yang Anda terbitkan.
+        </p>
+        <div class="form-grid" style="margin-bottom:12px;">
+          <div class="field">
+            <label for="genTargetRole">Peran Pemohon Izin</label>
+            <select id="genTargetRole">
+              <option value="pedagang">Pedagang / Mitra Warung (PDG-XXXX)</option>
+              <option value="pembeli">Customer / Pembeli (CST-XXXX)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="genApplicantName">Nama Pemohon / Toko</label>
+            <input id="genApplicantName" type="text" placeholder="Contoh: Warung Berkah Jaya" />
+          </div>
+          <div class="field">
+            <label for="genApplicantWa">No. WhatsApp Pemohon</label>
+            <input id="genApplicantWa" type="tel" placeholder="Contoh: 6281234567890" />
+          </div>
+          <div class="field" style="display:flex; align-items:flex-end;">
+            <button id="issueSingleCodeBtn" type="button" class="btn-gold" style="width:100%;">Terbitkan 1 Kode Acak</button>
+          </div>
+        </div>
+
+        <div id="issuedResultBox" class="hint-box hidden" style="margin-bottom:12px; border-color:var(--accent-border);">
+          <div style="margin-bottom:6px;">
+            <strong style="color:var(--accent);">Izin Diterbitkan:</strong>
+            <span id="issuedSummaryText"></span>
+          </div>
+          <div class="field" style="margin-bottom:8px;">
+            <label for="issuedSingleLink">Tautan Akses Khusus (Hanya untuk pemohon ini)</label>
+            <input id="issuedSingleLink" type="text" readonly />
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button id="copyIssuedLinkBtn" type="button" class="btn-outline btn-sm">Salin Tautan</button>
+            <a id="sendIssuedWaBtn" href="#" target="_blank" rel="noopener" class="btn-ok btn-sm" style="text-decoration:none; display:inline-flex; align-items:center;">Kirim Kode &amp; Link via WhatsApp</a>
+          </div>
+        </div>
+
+        <div class="card-title" style="margin-top:14px;"><span>Daftar Izin Aktif (Khusus Tampilan Creator)</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Kode Tunggal</th>
+                <th>Peran</th>
+                <th>Pemohon</th>
+                <th>No. WA</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="creatorLicensesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL PEDAGANG -->
+    <section id="pedagangView" class="hidden">
+      <div class="stats-grid">
+        <div class="stat"><label>Omzet Tunai / Lunas</label><strong id="statOmzet">Rp0</strong></div>
+        <div class="stat"><label>Perkiraan Laba Bersih</label><strong id="statProfit">Rp0</strong></div>
+        <div class="stat"><label>Piutang / Hutang Aktif</label><strong id="statHutang">Rp0</strong></div>
+        <div class="stat"><label>Pesanan Masuk / Stok Menipis</label><strong id="statOrderStock">0 / 0</strong></div>
+      </div>
+
+      <div id="stockAlertBanner" class="alert-banner">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div>
+            <strong id="stockAlertTitle">Peringatan Stok!</strong>
+            <div id="stockAlertList" style="font-size:0.85rem; margin-top:4px;"></div>
+          </div>
+          <button type="button" class="btn-outline btn-sm" onclick="switchPedagangTab('stock')">Kelola Stok</button>
+        </div>
+      </div>
+
+      <div class="nav-pills">
+        <button type="button" class="nav-pill active" data-ptab="pos" onclick="switchPedagangTab('pos')">Kasir POS</button>
+        <button type="button" class="nav-pill" data-ptab="orders" onclick="switchPedagangTab('orders')">Pesanan Pembeli &amp; Ongkir</button>
+        <button type="button" class="nav-pill" data-ptab="stock" onclick="switchPedagangTab('stock')">Stok &amp; Satuan Bertingkat</button>
+        <button type="button" class="nav-pill" data-ptab="history" onclick="switchPedagangTab('history')">Riwayat &amp; Bon Lengkap</button>
+        <button type="button" class="nav-pill" data-ptab="kas" onclick="switchPedagangTab('kas')">Buku Kas &amp; Hutang</button>
+        <button type="button" class="nav-pill" data-ptab="share" onclick="switchPedagangTab('share')">Tautan Pembeli &amp; Pengaturan</button>
+      </div>
+
+      <!-- TAB 1: KASIR POS -->
+      <div id="ptab-pos" class="grid-2">
+        <div class="card">
+          <div class="card-title">
+            <span>Daftar Produk Kasir (Otomatis Konversi Satuan)</span>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <input id="posSearchInput" type="text" placeholder="Cari barang..." style="width:150px;" />
+              <select id="posCategoryFilter">
+                <option value="ALL">Semua Kategori</option>
+                <option value="LOW">Stok Menipis / Habis</option>
+                <option value="Rokok">Rokok</option>
+                <option value="Sembako">Sembako</option>
+                <option value="Makanan Ringan">Makanan Ringan</option>
+                <option value="Obat-obatan">Obat-obatan</option>
+                <option value="Minuman">Minuman</option>
+                <option value="Bumbu Dapur">Bumbu Dapur</option>
+                <option value="Dan Lainnya">Dan Lainnya</option>
+              </select>
+            </div>
+          </div>
+          <div id="posProductGrid" class="products-grid"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span>Keranjang Kasir</span>
+            <select id="posPriceTier" aria-label="Satuan Penjualan">
+              <option value="small">Satuan Terkecil (Batang/Sachet/Pcs)</option>
+              <option value="medium">Satuan Menengah / Eceran (Bungkus/Kg)</option>
+              <option value="large">Satuan Terbesar / Glosiran (Slop/Dus/Karung)</option>
+            </select>
+          </div>
+          <div id="cartItemsList" style="min-height:120px; margin-bottom:12px;"></div>
+          <div class="form-grid" style="margin-bottom:8px;">
+            <div class="field">
+              <label for="customerNameInput">Nama Pembeli</label>
+              <input id="customerNameInput" type="text" placeholder="Contoh: Pak Anton" />
+            </div>
+            <div class="field">
+              <label for="customerWaPosInput">No. WA Pembeli (Opsional)</label>
+              <input id="customerWaPosInput" type="tel" placeholder="0812..." />
+            </div>
+          </div>
+          <div class="form-grid" style="margin-bottom:8px;">
+            <div class="field">
+              <label for="posDeliverySelect">Opsi Pengambilan</label>
+              <select id="posDeliverySelect">
+                <option value="Ambil Sendiri">Ambil Sendiri di Warung (Rp0)</option>
+                <option value="Diantar">Diantar ke Alamat Pembeli (+Ongkir)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="posShippingFeeInput">Ongkos Kirim (Rp)</label>
+              <input id="posShippingFeeInput" type="number" min="0" value="0" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:12px;">
+            <label for="paymentMethodSelect">Metode Pembayaran</label>
+            <select id="paymentMethodSelect">
+              <option value="Tunai">Tunai (Lunas)</option>
+              <option value="Hutang">Hutang (Piutang)</option>
+            </select>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:1.05rem; font-weight:700; margin-bottom:12px;">
+            <span>Total Tagihan (+Ongkir)</span>
+            <span id="cartTotalLabel" style="color:var(--accent);">Rp0</span>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button id="clearCartBtn" type="button" class="btn-danger btn-sm">Kosongkan</button>
+            <button id="checkoutBtn" type="button" class="btn-gold" style="flex:1;">Simpan &amp; Cetak Bon Lengkap</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: PESANAN MASUK DARI PEMBELI & ONGKIR -->
+      <div id="ptab-orders" class="card hidden">
+        <div class="card-title">
+          <span>Pesanan Otomatis dari Aplikasi Pembeli</span>
+          <small style="color:var(--text-muted);">Atur ongkos kirim jika diantar, lalu konfirmasi menjadi transaksi &amp; bon lengkap</small>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID &amp; Waktu</th>
+                <th>Pembeli &amp; No. WA</th>
+                <th>Rincian Pesanan</th>
+                <th>Pengiriman &amp; Ongkir</th>
+                <th>Total Akhir</th>
+                <th>Aksi Pedagang</th>
+              </tr>
+            </thead>
+            <tbody id="incomingOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: STOK & INPUT SATUAN BERTINGKAT -->
+      <div id="ptab-stock" class="card hidden">
+        <div class="card-title">
+          <span>+ Tambah Barang &amp; Satuan Bertingkat (Terbesar ke Terkecil)</span>
+          <div style="display:flex; align-items:center; gap:6px; font-size:0.82rem;">
+            <span>Batas Stok Menipis (Unit Terkecil):</span>
+            <input id="minStockThresholdInput" type="number" min="1" value="10" style="width:74px;" />
+          </div>
+        </div>
+
+        <div class="hint-box" style="margin-bottom:12px;">
+          <strong>Contoh Perhitungan Otomatis (Rokok Magnum Kretek):</strong><br/>
+          Modal/HPP: 1 Slop = Rp150.000 (isi 10 Bungkus @ Rp15.000, isi 12 Batang/bungkus = 120 Batang @ Rp1.250/batang).<br/>
+          Harga Jual dibedakan agar pedagang mendapat keuntungan: misal <strong>1 Slop = Rp165.000</strong>, <strong>1 Bungkus = Rp17.000</strong>, dan <strong>1 Batang = Rp1.500</strong>. Saat pembeli pesan 1 bungkus atau 1 batang, stok dan harga dihitung otomatis!
+        </div>
+
+        <form id="addProductForm" class="form-grid" style="margin-bottom:16px;">
+          <div class="field">
+            <label for="newProdName">Nama Barang</label>
+            <input id="newProdName" type="text" required placeholder="Contoh: Rokok Magnum Kretek" />
+          </div>
+          <div class="field">
+            <label for="newProdCat">Kategori</label>
+            <select id="newProdCat">
+              <option value="Dan Lainnya" selected>Dan Lainnya</option>
+              <option value="Rokok">Rokok</option>
+              <option value="Sembako">Sembako</option>
+              <option value="Makanan Ringan">Makanan Ringan</option>
+              <option value="Obat-obatan">Obat-obatan</option>
+              <option value="Minuman">Minuman</option>
+              <option value="Bumbu Dapur">Bumbu Dapur</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="newLargeUnitName">Nama Satuan Terbesar</label>
+            <input id="newLargeUnitName" type="text" value="Slop" required placeholder="Slop / Dus / Karung" />
+          </div>
+          <div class="field">
+            <label for="newMedUnitName">Nama Satuan Menengah</label>
+            <input id="newMedUnitName" type="text" value="Bungkus" required placeholder="Bungkus / Renteng / Kg" />
+          </div>
+          <div class="field">
+            <label for="newSmallUnitName">Nama Satuan Terkecil</label>
+            <input id="newSmallUnitName" type="text" value="Batang" required placeholder="Batang / Sachet / Butir" />
+          </div>
+          <div class="field">
+            <label for="newMedPerLarge">Isi Menengah per Terbesar</label>
+            <input id="newMedPerLarge" type="number" min="1" value="10" required />
+          </div>
+          <div class="field">
+            <label for="newSmallPerMed">Isi Terkecil per Menengah</label>
+            <input id="newSmallPerMed" type="number" min="1" value="12" required />
+          </div>
+          <div class="field">
+            <label for="newStockLargeQty">Stok Awal (dalam Satuan Terbesar)</label>
+            <input id="newStockLargeQty" type="number" min="0" step="0.1" value="2" required />
+          </div>
+          <div class="field">
+            <label for="newHppLarge">Harga Modal / HPP (per Satuan Terbesar)</label>
+            <input id="newHppLarge" type="number" min="0" value="150000" required />
+          </div>
+          <div class="field">
+            <label for="newSellLarge">Harga Jual Satuan Terbesar (Glosiran)</label>
+            <input id="newSellLarge" type="number" min="0" value="165000" required />
+          </div>
+          <div class="field">
+            <label for="newSellMed">Harga Jual Satuan Menengah (Eceran)</label>
+            <input id="newSellMed" type="number" min="0" value="17000" required />
+          </div>
+          <div class="field">
+            <label for="newSellSmall">Harga Jual Satuan Terkecil</label>
+            <input id="newSellSmall" type="number" min="0" value="1500" required />
+          </div>
+          <div class="field" style="display:flex; align-items:flex-end;">
+            <button type="submit" class="btn-gold" style="width:100%;">Simpan Barang &amp; Satuan</button>
+          </div>
+        </form>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Barang &amp; Kategori</th>
+                <th>Konversi Satuan</th>
+                <th>Sisa Stok Otomatis</th>
+                <th>Modal (HPP)</th>
+                <th>Harga Jual (Terbesar / Menengah / Terkecil)</th>
+                <th>Tambah Stok</th>
+              </tr>
+            </thead>
+            <tbody id="stockTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 4: RIWAYAT & BON LENGKAP -->
+      <div id="ptab-history" class="card hidden">
+        <div class="card-title">
+          <span>Riwayat Transaksi &amp; Bon Lengkap (Terhubung Pedagang &amp; Pembeli)</span>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <input id="historySearchInput" type="text" placeholder="Cari ID / nama / No. WA..." />
+            <select id="historyStatusFilter">
+              <option value="ALL">Semua Status</option>
+              <option value="Tunai">Tunai (Lunas)</option>
+              <option value="Hutang">Hutang (Belum Lunas)</option>
+              <option value="Lunas">Hutang Sudah Lunas</option>
+              <option value="Dibatalkan">Dibatalkan</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID &amp; Waktu</th>
+                <th>Pembeli &amp; WA</th>
+                <th>Rincian &amp; Pengiriman</th>
+                <th>Total + Ongkir</th>
+                <th>Status</th>
+                <th>Aksi Bon</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: BUKU KAS & HUTANG -->
+      <div id="ptab-kas" class="card hidden">
+        <div class="card-title"><span>Buku Kas Harian &amp; Piutang (Hutang)</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Bon</th>
+                <th>Waktu</th>
+                <th>Pembeli (WA)</th>
+                <th>Total Tagihan</th>
+                <th>Laba Bersih</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="kasTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 6: TAUTAN PEMBELI & PENGATURAN WARUNG -->
+      <div id="ptab-share" class="card hidden">
+        <div class="card-title"><span>Pengaturan Warung, Ongkir &amp; Tautan Terhubung ke Pembeli</span></div>
+        <div class="form-grid" style="margin-bottom:14px;">
+          <div class="field">
+            <label for="cfgStoreName">Nama Warung / Toko</label>
+            <input id="cfgStoreName" type="text" value="SATHORIK WARUNG PRO" />
+          </div>
+          <div class="field">
+            <label for="cfgMerchantWa">No. WhatsApp Pedagang (Penerima Pesanan)</label>
+            <input id="cfgMerchantWa" type="tel" value="6281234567890" />
+          </div>
+          <div class="field">
+            <label for="cfgDefaultShipping">Ongkos Kirim Standar Jika Diantar (Rp)</label>
+            <input id="cfgDefaultShipping" type="number" min="0" value="5000" />
+          </div>
+          <div class="field">
+            <label for="cfgStoreAddress">Alamat / Catatan Struk 58mm</label>
+            <input id="cfgStoreAddress" type="text" value="Melayani Eceran & Glosiran - Terima Kasih" />
+          </div>
+        </div>
+        <button id="saveMerchantSettingsBtn" type="button" class="btn-gold btn-sm" style="margin-bottom:16px;">Simpan Pengaturan Warung</button>
+
+        <div class="hint-box" style="border-color:var(--accent-border);">
+          <strong style="color:var(--accent);">Tautan Aplikasi Pembeli (Langsung Terhubung ke Warung Anda):</strong>
+          <p style="margin:6px 0;">Bagikan tautan ini ke pembeli. Pembeli dapat langsung melihat katalog tanpa login atau memasukkan Nomor WhatsApp mereka agar terhubung saat pemesanan &amp; cek bon transaksi:</p>
+          <div class="field" style="margin-bottom:8px;">
+            <input id="buyerShareUrlInput" type="text" readonly />
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+            <button id="copyBuyerShareUrlBtn" type="button" class="btn-outline btn-sm">Salin Tautan Pembeli</button>
+            <a id="waShareToBuyerBtn" href="#" target="_blank" rel="noopener" class="btn-ok btn-sm" style="text-decoration:none; display:inline-flex; align-items:center;">Bagikan Tautan ke WhatsApp Pembeli</a>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="inviteSpecificBuyerWa">Kirim Tautan Khusus ke No. WA Pembeli Tertentu (Opsional)</label>
+              <input id="inviteSpecificBuyerWa" type="tel" placeholder="Contoh: 081298765432" />
+            </div>
+            <div class="field" style="display:flex; align-items:flex-end;">
+              <button id="sendSpecificBuyerInviteBtn" type="button" class="btn-outline" style="width:100%;">Kirim Tautan Login WA ke Pembeli Ini</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL PEMBELI (Katalog langsung tanpa login + Identitas No. WA + Bon Transaksi Lengkap) -->
+    <section id="pembeliView" class="hidden">
+      <div class="card" style="padding:12px 16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong style="color:var(--accent);" id="buyerBannerStore">Terhubung dengan Warung</strong>
+            <div style="font-size:0.82rem; color:var(--text-muted);" id="buyerIdentityDisplay">Mode: Akses Langsung Katalog</div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="nav-pill active" data-btab="catalog" onclick="switchBuyerTab('catalog')">Katalog &amp; Pesan</button>
+            <button type="button" class="nav-pill" data-btab="receipts" onclick="switchBuyerTab('receipts')">Bon Transaksi Lengkap Saya</button>
+            <button type="button" class="btn-outline btn-sm" onclick="openBuyerWaUpdate()">Ubah / Hubungkan No. WA</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB PEMBELI 1: KATALOG & PEMESANAN -->
+      <div id="btab-catalog" class="grid-2">
+        <div class="card">
+          <div class="card-title">
+            <span>Daftar Barang Warung (Pilih Satuan Terkecil / Bungkus / Slop)</span>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <input id="buyerSearchInput" type="text" placeholder="Cari barang..." style="width:145px;" />
+              <select id="buyerCategoryFilter">
+                <option value="ALL">Semua Kategori</option>
+                <option value="Rokok">Rokok</option>
+                <option value="Sembako">Sembako</option>
+                <option value="Makanan Ringan">Makanan Ringan</option>
+                <option value="Obat-obatan">Obat-obatan</option>
+                <option value="Minuman">Minuman</option>
+                <option value="Bumbu Dapur">Bumbu Dapur</option>
+                <option value="Dan Lainnya">Dan Lainnya</option>
+              </select>
+            </div>
+          </div>
+          <div id="buyerProductGrid" class="products-grid"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>Keranjang Belanja &amp; Pengiriman</span></div>
+          <div id="buyerCartList" style="min-height:110px; margin-bottom:12px;"></div>
+          <div class="form-grid" style="margin-bottom:8px;">
+            <div class="field">
+              <label for="buyerOrderName">Nama Pembeli</label>
+              <input id="buyerOrderName" type="text" placeholder="Masukkan nama Anda" />
+            </div>
+            <div class="field">
+              <label for="buyerOrderWa">No. WhatsApp Pembeli</label>
+              <input id="buyerOrderWa" type="tel" placeholder="0812..." />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:8px;">
+            <label for="buyerDeliveryOption">Pilihan Pengambilan Pesanan</label>
+            <select id="buyerDeliveryOption">
+              <option value="Ambil Sendiri">Ambil Sendiri di Warung (Gratis Ongkir)</option>
+              <option value="Diantar">Diantar ke Rumah (+Ongkos Kirim Warung)</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:8px;">
+            <label for="buyerDeliveryAddress">Alamat Pengantaran / Catatan</label>
+            <input id="buyerDeliveryAddress" type="text" placeholder="Tulis alamat jika diantar atau catatan pesanan" />
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px; display:flex; justify-content:space-between;">
+            <span>Subtotal Barang:</span>
+            <span id="buyerSubtotalLabel">Rp0</span>
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px; display:flex; justify-content:space-between;">
+            <span>Estimasi Ongkos Kirim:</span>
+            <span id="buyerShippingLabel">Rp0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.05rem; margin-bottom:12px;">
+            <span>Total Estimasi</span>
+            <span id="buyerTotalLabel" style="color:var(--accent);">Rp0</span>
+          </div>
+          <button id="submitBuyerOrderBtn" type="button" class="btn-gold" style="width:100%;">
+            Kirim Pesanan ke Aplikasi &amp; WA Pedagang
+          </button>
+        </div>
+      </div>
+
+      <!-- SUB-TAB PEMBELI 2: BON TRANSAKSI LENGKAP TERHUBUNG -->
+      <div id="btab-receipts" class="card hidden">
+        <div class="card-title">
+          <span>Bon Transaksi Lengkap (Terhubung dengan Pedagang)</span>
+          <small style="color:var(--text-muted);" id="buyerReceiptFilterNote">Menampilkan riwayat pesanan &amp; bon resmi Anda</small>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No. Bon &amp; Waktu</th>
+                <th>Rincian Belanja</th>
+                <th>Pengiriman &amp; Ongkir</th>
+                <th>Total Bayar</th>
+                <th>Status</th>
+                <th>Bon</th>
+              </tr>
+            </thead>
+            <tbody id="buyerReceiptsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- MODAL BON TRANSAKSI LENGKAP (58MM & DETAIL) -->
+  <div id="receiptModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Bon Transaksi Lengkap">
+    <div>
+      <div id="receiptContent" class="receipt-58"></div>
+      <div class="receipt-actions">
+        <button type="button" class="btn-gold btn-sm" onclick="window.print()">Cetak Bon 58mm</button>
+        <button type="button" class="btn-outline btn-sm" onclick="closeReceiptModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Parameter URL rahasia khusus Kreator (bukan ?gate=creator yang mudah ditebak)
+    const CREATOR_SECRET_PARAM = "vault";
+    const CREATOR_SECRET_KEY = "strk_9xL4mQ2pR8vZ";
+    const DEFAULT_CREATOR_PIN = "Strk#92Lm!74Qp";
+    const CREATOR_SECURITY_KEY = "sathorik_creator_sec_v1";
+    const MAX_CREATOR_ATTEMPTS = 3;
+    const LOCK_DURATION_MS = 5 * 60 * 1000; // 5 menit jeda jika 3x gagal
+    const STORAGE_KEY = "sathorik_v3_connected_pos";
+
+    function loadCreatorSecurity() {
+      try {
+        const raw = localStorage.getItem(CREATOR_SECURITY_KEY);
+        if (!raw) return { customPin: "", failedAttempts: 0, lockUntil: 0 };
+        return { customPin: "", failedAttempts: 0, lockUntil: 0, ...JSON.parse(raw) };
+      } catch {
+        return { customPin: "", failedAttempts: 0, lockUntil: 0 };
+      }
+    }
+
+    function saveCreatorSecurity(sec) {
+      try {
+        localStorage.setItem(CREATOR_SECURITY_KEY, JSON.stringify(sec));
+      } catch {}
+    }
+
+    function getActiveCreatorPin() {
+      const sec = loadCreatorSecurity();
+      return sec.customPin && sec.customPin.length >= 8 ? sec.customPin : DEFAULT_CREATOR_PIN;
+    }
+
+    function updateCreatorLockBanner() {
+      const alertBox = document.getElementById("creatorLockAlert");
+      const btn = document.getElementById("creatorLoginBtn");
+      const input = document.getElementById("creatorPinInput");
+      if (!alertBox || !btn || !input) return;
+
+      const sec = loadCreatorSecurity();
+      const now = Date.now();
+      if (sec.lockUntil && now < sec.lockUntil) {
+        const sisaDetik = Math.ceil((sec.lockUntil - now) / 1000);
+        const menit = Math.floor(sisaDetik / 60);
+        const detik = sisaDetik % 60;
+        alertBox.classList.add("show");
+        alertBox.textContent = `Akses dikunci sementara karena ${MAX_CREATOR_ATTEMPTS}x percobaan gagal. Coba lagi dalam ${menit}m ${detik}d.`;
+        btn.disabled = true;
+        input.disabled = true;
+      } else {
+        if (sec.lockUntil && now >= sec.lockUntil) {
+          sec.lockUntil = 0;
+          sec.failedAttempts = 0;
+          saveCreatorSecurity(sec);
+        }
+        alertBox.classList.remove("show");
+        alertBox.textContent = "";
+        btn.disabled = false;
+        input.disabled = false;
+      }
+    }
+
+    function normalizePhone(raw) {
+      const digits = String(raw || "").replace(/\D/g, "");
+      if (!digits) return "";
+      if (digits.startsWith("0")) return "62" + digits.slice(1);
+      return digits;
+    }
+
+    function formatRp(num) {
+      return "Rp" + Math.round(Number(num || 0)).toLocaleString("id-ID");
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "").replace(/[&<>"']/g, m => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[m]));
+    }
+
+    // Database awal lengkap dengan satuan bertingkat (Terbesar -> Menengah -> Terkecil)
+    const INITIAL_PRODUCTS = [
+      {
+        id: "PRD-001", name: "Rokok Magnum Kretek", category: "Rokok",
+        units: { large: "Slop", medium: "Bungkus", small: "Batang" },
+        conv: { medPerLarge: 10, smallPerMed: 12 },
+        stockSmall: 240,
+        hppLarge: 150000,
+        sell: { large: 165000, medium: 17000, small: 1500 }
+      },
+      {
+        id: "PRD-002", name: "Rokok Surya Pro Mild", category: "Rokok",
+        units: { large: "Slop", medium: "Bungkus", small: "Batang" },
+        conv: { medPerLarge: 10, smallPerMed: 16 },
+        stockSmall: 320,
+        hppLarge: 270000,
+        sell: { large: 288000, medium: 30000, small: 2000 }
+      },
+      {
+        id: "PRD-003", name: "Beras Premium 5kg", category: "Sembako",
+        units: { large: "Karung 25kg", medium: "Sak 5kg", small: "Kg" },
+        conv: { medPerLarge: 5, smallPerMed: 5 },
+        stockSmall: 75,
+        hppLarge: 310000,
+        sell: { large: 335000, medium: 70000, small: 14500 }
+      },
+      {
+        id: "PRD-004", name: "Gula Pasir Putih", category: "Sembako",
+        units: { large: "Karung 50kg", medium: "Bungkus 1kg", small: "1/4 Kg" },
+        conv: { medPerLarge: 50, smallPerMed: 4 },
+        stockSmall: 80,
+        hppLarge: 750000,
+        sell: { large: 800000, medium: 17500, small: 4500 }
+      },
+      {
+        id: "PRD-005", name: "Minyak Goreng Pouch", category: "Sembako",
+        units: { large: "Dus 12 Pouch", medium: "Pouch 1L", small: "1/2 Liter" },
+        conv: { medPerLarge: 12, smallPerMed: 2 },
+        stockSmall: 36,
+        hppLarge: 192000,
+        sell: { large: 210000, medium: 18500, small: 9500 }
+      },
+      {
+        id: "PRD-006", name: "Telur Ayam Negeri", category: "Sembako",
+        units: { large: "Peti 15kg", medium: "Kg (16 Butir)", small: "Butir" },
+        conv: { medPerLarge: 15, smallPerMed: 16 },
+        stockSmall: 240,
+        hppLarge: 390000,
+        sell: { large: 420000, medium: 29000, small: 2000 }
+      },
+      {
+        id: "PRD-007", name: "Mie Instan Goreng", category: "Sembako",
+        units: { large: "Dus 40 Bks", medium: "Paket 5 Bks", small: "Bungkus" },
+        conv: { medPerLarge: 8, smallPerMed: 5 },
+        stockSmall: 80,
+        hppLarge: 108000,
+        sell: { large: 118000, medium: 15500, small: 3500 }
+      },
+      {
+        id: "PRD-008", name: "Kopi Kapal Api Mix", category: "Minuman",
+        units: { large: "Dus 12 Rtg", medium: "Renteng 10 Sct", small: "Sachet" },
+        conv: { medPerLarge: 12, smallPerMed: 10 },
+        stockSmall: 180,
+        hppLarge: 156000,
+        sell: { large: 172000, medium: 15500, small: 2000 }
+      },
+      {
+        id: "PRD-009", name: "Air Mineral 600ml", category: "Minuman",
+        units: { large: "Dus 24 Btl", medium: "Pak 6 Btl", small: "Botol" },
+        conv: { medPerLarge: 4, smallPerMed: 6 },
+        stockSmall: 72,
+        hppLarge: 48000,
+        sell: { large: 56000, medium: 16000, small: 3000 }
+      },
+      {
+        id: "PRD-010", name: "Keripik Singkong Balado", category: "Makanan Ringan",
+        units: { large: "Bal 20 Bks", medium: "Pak 5 Bks", small: "Bungkus" },
+        conv: { medPerLarge: 4, smallPerMed: 5 },
+        stockSmall: 40,
+        hppLarge: 80000,
+        sell: { large: 92000, medium: 24000, small: 5000 }
+      },
+      {
+        id: "PRD-011", name: "Obat Sakit Kepala Strip", category: "Obat-obatan",
+        units: { large: "Box 25 Strip", medium: "Strip 4 Tab", small: "Tablet" },
+        conv: { medPerLarge: 25, smallPerMed: 4 },
+        stockSmall: 100,
+        hppLarge: 65000,
+        sell: { large: 75000, medium: 3500, small: 1000 }
+      },
+      {
+        id: "PRD-012", name: "Kaldu Bubuk Ayam", category: "Bumbu Dapur",
+        units: { large: "Dus 24 Rtg", medium: "Renteng 12 Sct", small: "Sachet" },
+        conv: { medPerLarge: 24, smallPerMed: 12 },
+        stockSmall: 144,
+        hppLarge: 115000,
+        sell: { large: 128000, medium: 5800, small: 500 }
+      },
+      {
+        id: "PRD-013", name: "Sabun Cuci Piring Sachet", category: "Dan Lainnya",
+        units: { large: "Dus 12 Rtg", medium: "Renteng 12 Sct", small: "Sachet" },
+        conv: { medPerLarge: 12, smallPerMed: 12 },
+        stockSmall: 96,
+        hppLarge: 110000,
+        sell: { large: 122000, medium: 11000, small: 1000 }
+      }
+    ];
+
+    function createDefaultState() {
+      return {
+        theme: "black-gold",
+        minStockThreshold: 12,
+        merchant: {
+          storeName: "SATHORIK WARUNG PRO",
+          waNumber: "6281234567890",
+          defaultShipping: 5000,
+          addressNote: "Melayani Eceran & Glosiran - Terima Kasih"
+        },
+        licenses: [
+          { code: "PDG-8899", role: "pedagang", applicant: "Mitra Warung Default", wa: "6281234567890", active: true },
+          { code: "CST-1122", role: "pembeli", applicant: "Pelanggan Default", wa: "6281200001122", active: true }
+        ],
+        products: JSON.parse(JSON.stringify(INITIAL_PRODUCTS)),
+        transactions: [],
+        incomingOrders: []
+      };
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return createDefaultState();
+        const parsed = JSON.parse(raw);
+        const def = createDefaultState();
+        return {
+          ...def,
+          ...parsed,
+          merchant: { ...def.merchant, ...(parsed.merchant || {}) },
+          licenses: Array.isArray(parsed.licenses) ? parsed.licenses : def.licenses,
+          products: Array.isArray(parsed.products) && parsed.products.length ? parsed.products : def.products,
+          transactions: Array.isArray(parsed.transactions) ? parsed.transactions : [],
+          incomingOrders: Array.isArray(parsed.incomingOrders) ? parsed.incomingOrders : []
+        };
+      } catch {
+        return createDefaultState();
+      }
+    }
+
+    let state = loadState();
+    let currentSession = null;
+    let posCart = [];
+    let buyerCart = [];
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn("Penyimpanan lokal terbatas:", e);
+      }
+    }
+
+    // --- KALKULASI SATUAN & HARGA OTOMATIS ---
+    function getSmallFactor(prod, tier) {
+      const medPerLarge = Math.max(1, Number(prod.conv.medPerLarge) || 1);
+      const smallPerMed = Math.max(1, Number(prod.conv.smallPerMed) || 1);
+      if (tier === "large") return medPerLarge * smallPerMed;
+      if (tier === "medium") return smallPerMed;
+      return 1;
+    }
+
+    function getUnitName(prod, tier) {
+      return prod.units?.[tier] || (tier === "large" ? "Besar" : tier === "medium" ? "Menengah" : "Kecil");
+    }
+
+    function getUnitSellPrice(prod, tier) {
+      return Number(prod.sell?.[tier] || 0);
+    }
+
+    function getUnitHpp(prod, tier) {
+      const totalSmallPerLarge = getSmallFactor(prod, "large");
+      const hppPerSmall = Number(prod.hppLarge || 0) / totalSmallPerLarge;
+      return hppPerSmall * getSmallFactor(prod, tier);
+    }
+
+    function formatStockBreakdown(prod) {
+      const totalSmall = Math.max(0, Math.floor(Number(prod.stockSmall) || 0));
+      const smallPerLarge = getSmallFactor(prod, "large");
+      const smallPerMed = getSmallFactor(prod, "medium");
+
+      const largeQty = Math.floor(totalSmall / smallPerLarge);
+      const remAfterLarge = totalSmall % smallPerLarge;
+      const medQty = Math.floor(remAfterLarge / smallPerMed);
+      const smallQty = remAfterLarge % smallPerMed;
+
+      return `${largeQty} ${prod.units.large}, ${medQty} ${prod.units.medium}, ${smallQty} ${prod.units.small} (Total: ${totalSmall} ${prod.units.small})`;
+    }
+
+    function getStockStatus(prod) {
+      const s = Number(prod.stockSmall || 0);
+      const th = Number(state.minStockThreshold || 10);
+      if (s <= 0) return "out";
+      if (s <= th) return "low";
+      return "ok";
+    }
+
+    // --- ROUTING PRIVAT & INISIALISASI SESI ---
+    function initRouting() {
+      const params = new URLSearchParams(window.location.search);
+      const gate = (params.get("gate") || "").toLowerCase();
+      const role = (params.get("role") || "").toLowerCase();
+      const code = (params.get("code") || "").trim().toUpperCase();
+      const waParam = normalizePhone(params.get("wa") || "");
+      const merchantWaParam = normalizePhone(params.get("mwa") || "");
+
+      if (merchantWaParam) {
+        state.merchant.waNumber = merchantWaParam;
+        saveState();
+      }
+
+      // 1. Jalur Privat Creator (?vault=strk_9xL4mQ2pR8vZ) -> Tersembunyi dari pedagang & pembeli
+      const vaultKey = (params.get(CREATOR_SECRET_PARAM) || "").trim();
+      if (vaultKey === CREATOR_SECRET_KEY) {
+        showOnlySection("creatorGateSection");
+        updateCreatorLockBanner();
+        return;
+      }
+
+      // 2. Jalur Privat Pedagang (?gate=pedagang atau ?role=pedagang&code=...) -> Tersembunyi dari pembeli
+      if (gate === "pedagang" || role === "pedagang") {
+        if (code && isValidLicense("pedagang", code)) {
+          currentSession = { role: "pedagang", code };
+          renderApp();
+          return;
+        }
+        if (code) document.getElementById("pedagangCodeInput").value = code;
+        showOnlySection("pedagangGateSection");
+        return;
+      }
+
+      // 3. Jalur Pembeli (Default saat membuka root URL atau ?role=pembeli)
+      if (waParam) {
+        currentSession = { role: "pembeli", buyerWa: waParam, buyerName: params.get("name") || "Pelanggan WA", code: code || "" };
+        renderApp();
+        return;
+      }
+
+      if (role === "pembeli" && code && isValidLicense("pembeli", code)) {
+        const lic = state.licenses.find(l => l.code === code);
+        currentSession = {
+          role: "pembeli",
+          code,
+          buyerWa: lic?.wa || "",
+          buyerName: lic?.applicant || "Pelanggan"
+        };
+        renderApp();
+        return;
+      }
+
+      showOnlySection("buyerPortalSection");
+    }
+
+    function showOnlySection(sectionId) {
+      [
+        "creatorGateSection",
+        "pedagangGateSection",
+        "buyerPortalSection",
+        "creatorView",
+        "pedagangView",
+        "pembeliView"
+      ].forEach(id => {
+        document.getElementById(id).classList.toggle("hidden", id !== sectionId);
+      });
+    }
+
+    function isValidLicense(role, code) {
+      const clean = String(code || "").trim().toUpperCase();
+      return state.licenses.some(l => l.role === role && l.code === clean && l.active);
+    }
+
+    function renderApp() {
+      document.body.setAttribute("data-theme", state.theme || "black-gold");
+      document.getElementById("themeSelect").value = state.theme || "black-gold";
+      document.getElementById("headerStoreName").textContent = state.merchant.storeName || "SATHORIK POS PRO";
+
+      const badge = document.getElementById("activeSessionBadge");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (!currentSession) {
+        badge.classList.add("hidden");
+        logoutBtn.classList.add("hidden");
+        initRouting();
+        return;
+      }
+
+      badge.classList.remove("hidden");
+      logoutBtn.classList.remove("hidden");
+
+      if (currentSession.role === "creator") {
+        badge.textContent = "CREATOR PRIVAT";
+        showOnlySection("creatorView");
+        renderCreatorLicenses();
+      } else if (currentSession.role === "pedagang") {
+        badge.textContent = `PEDAGANG • ${currentSession.code}`;
+        showOnlySection("pedagangView");
+        renderPedagangAll();
+      } else if (currentSession.role === "pembeli") {
+        badge.textContent = currentSession.buyerWa
+          ? `PEMBELI • WA ${currentSession.buyerWa}`
+          : "PEMBELI • KATALOG LANGSUNG";
+        showOnlySection("pembeliView");
+        renderPembeliAll();
+      }
+    }
+
+    // --- CREATOR LOGIC ---
+    setInterval(() => {
+      const gateEl = document.getElementById("creatorGateSection");
+      if (gateEl && !gateEl.classList.contains("hidden")) {
+        updateCreatorLockBanner();
+      }
+    }, 1000);
+
+    document.getElementById("creatorLoginBtn").addEventListener("click", () => {
+      const sec = loadCreatorSecurity();
+      const now = Date.now();
+      if (sec.lockUntil && now < sec.lockUntil) {
+        updateCreatorLockBanner();
+        return;
+      }
+
+      const pin = document.getElementById("creatorPinInput").value.trim();
+      if (pin !== getActiveCreatorPin()) {
+        sec.failedAttempts = (sec.failedAttempts || 0) + 1;
+        document.getElementById("creatorPinInput").value = "";
+        if (sec.failedAttempts >= MAX_CREATOR_ATTEMPTS) {
+          sec.lockUntil = now + LOCK_DURATION_MS;
+          saveCreatorSecurity(sec);
+          updateCreatorLockBanner();
+          alert(`PIN salah ${MAX_CREATOR_ATTEMPTS} kali. Login Kreator dikunci selama 5 menit.`);
+        } else {
+          saveCreatorSecurity(sec);
+          const sisa = MAX_CREATOR_ATTEMPTS - sec.failedAttempts;
+          alert(`PIN Kuat Kreator salah. Sisa percobaan: ${sisa} kali.`);
+        }
+        return;
+      }
+
+      sec.failedAttempts = 0;
+      sec.lockUntil = 0;
+      saveCreatorSecurity(sec);
+      document.getElementById("creatorPinInput").value = "";
+      currentSession = { role: "creator" };
+      renderApp();
+    });
+
+    document.getElementById("updateCreatorPinBtn").addEventListener("click", () => {
+      const p1 = document.getElementById("newCreatorPinInput").value.trim();
+      const p2 = document.getElementById("confirmCreatorPinInput").value.trim();
+      if (p1.length < 8) {
+        alert("PIN Kuat baru minimal harus 8 karakter (kombinasi huruf, angka, simbol).");
+        return;
+      }
+      if (p1 !== p2) {
+        alert("Konfirmasi PIN baru tidak cocok.");
+        return;
+      }
+      const sec = loadCreatorSecurity();
+      sec.customPin = p1;
+      saveCreatorSecurity(sec);
+      document.getElementById("newCreatorPinInput").value = "";
+      document.getElementById("confirmCreatorPinInput").value = "";
+      alert("PIN Kuat Kreator berhasil diperbarui!");
+    });
+
+    document.getElementById("issueSingleCodeBtn").addEventListener("click", () => {
+      const role = document.getElementById("genTargetRole").value;
+      const applicant = (document.getElementById("genApplicantName").value || "Mitra Baru").trim();
+      const wa = normalizePhone(document.getElementById("genApplicantWa").value);
+      const prefix = role === "pedagang" ? "PDG-" : "CST-";
+      let code = "";
+      do {
+        code = prefix + Math.floor(1000 + Math.random() * 9000);
+      } while (state.licenses.some(l => l.code === code));
+
+      state.licenses.unshift({ code, role, applicant, wa, active: true });
+      saveState();
+
+      const baseUrl = `${window.location.origin}${window.location.pathname}`;
+      const targetUrl = role === "pedagang"
+        ? `${baseUrl}?gate=pedagang&code=${encodeURIComponent(code)}`
+        : `${baseUrl}?role=pembeli&code=${encodeURIComponent(code)}${wa ? `&wa=${encodeURIComponent(wa)}` : ""}`;
+
+      document.getElementById("issuedResultBox").classList.remove("hidden");
+      document.getElementById("issuedSummaryText").textContent = `${applicant} (${role.toUpperCase()}) -> Kode: ${code}`;
+      document.getElementById("issuedSingleLink").value = targetUrl;
+
+      const waMsg = encodeURIComponent(
+        `Halo ${applicant}, izin akses SATHORIK (${role.toUpperCase()}) Anda telah aktif.\nKode Akses Tunggal: *${code}*\nTautan Masuk: ${targetUrl}`
+      );
+      document.getElementById("sendIssuedWaBtn").href = wa ? `https://wa.me/${wa}?text=${waMsg}` : `https://wa.me/?text=${waMsg}`;
+      renderCreatorLicenses();
+    });
+
+    document.getElementById("copyIssuedLinkBtn").addEventListener("click", () => {
+      const el = document.getElementById("issuedSingleLink");
+      if (!el.value) return;
+      navigator.clipboard?.writeText(el.value);
+      alert("Tautan izin disalin.");
+    });
+
+    function toggleLicense(code) {
+      const lic = state.licenses.find(l => l.code === code);
+      if (!lic) return;
+      lic.active = !lic.active;
+      saveState();
+      renderCreatorLicenses();
+    }
+
+    function renderCreatorLicenses() {
+      const tbody = document.getElementById("creatorLicensesBody");
+      tbody.innerHTML = state.licenses.map(l => `
+        <tr>
+          <td><strong>${escapeHtml(l.code)}</strong></td>
+          <td>${escapeHtml(l.role.toUpperCase())}</td>
+          <td>${escapeHtml(l.applicant)}</td>
+          <td>${escapeHtml(l.wa || "-")}</td>
+          <td>${l.active ? `<span class="badge badge-ok">Aktif</span>` : `<span class="badge badge-out">Nonaktif</span>`}</td>
+          <td>
+            <button type="button" class="btn-outline btn-sm" onclick="toggleLicense('${escapeHtml(l.code)}')">
+              ${l.active ? "Cabut Izin" : "Aktifkan"}
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    // --- PEDAGANG LOGIN & WORKSPACE ---
+    document.getElementById("pedagangLoginBtn").addEventListener("click", () => {
+      const code = document.getElementById("pedagangCodeInput").value.trim().toUpperCase();
+      if (!isValidLicense("pedagang", code)) {
+        alert("Kode akses Pedagang tidak valid atau belum diizinkan oleh Creator.");
+        return;
+      }
+      currentSession = { role: "pedagang", code };
+      renderApp();
+    });
+
+    function switchPedagangTab(tab) {
+      ["pos", "orders", "stock", "history", "kas", "share"].forEach(id => {
+        document.getElementById(`ptab-${id}`).classList.toggle("hidden", id !== tab);
+      });
+      document.querySelectorAll("#pedagangView .nav-pill").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.ptab === tab);
+      });
+    }
+
+    function renderPedagangAll() {
+      document.getElementById("minStockThresholdInput").value = state.minStockThreshold;
+      document.getElementById("cfgStoreName").value = state.merchant.storeName;
+      document.getElementById("cfgMerchantWa").value = state.merchant.waNumber;
+      document.getElementById("cfgDefaultShipping").value = state.merchant.defaultShipping;
+      document.getElementById("cfgStoreAddress").value = state.merchant.addressNote;
+      updateBuyerShareUrlBox();
+
+      renderPedagangStats();
+      renderPosProducts();
+      renderPosCart();
+      renderIncomingOrders();
+      renderStockTable();
+      renderHistoryTable();
+      renderKasTable();
+    }
+
+    function renderPedagangStats() {
+      const validTx = state.transactions.filter(t => t.status !== "Dibatalkan");
+      const omzet = validTx.filter(t => t.status === "Tunai" || t.status === "Lunas").reduce((s, t) => s + t.grandTotal, 0);
+      const profit = validTx.filter(t => t.status === "Tunai" || t.status === "Lunas").reduce((s, t) => s + (t.profit || 0), 0);
+      const hutang = validTx.filter(t => t.status === "Hutang").reduce((s, t) => s + t.grandTotal, 0);
+
+      const lowCount = state.products.filter(p => getStockStatus(p) === "low").length;
+      const outCount = state.products.filter(p => getStockStatus(p) === "out").length;
+      const pendingOrders = state.incomingOrders.filter(o => o.status === "Menunggu Konfirmasi").length;
+
+      document.getElementById("statOmzet").textContent = formatRp(omzet);
+      document.getElementById("statProfit").textContent = formatRp(profit);
+      document.getElementById("statHutang").textContent = formatRp(hutang);
+      document.getElementById("statOrderStock").textContent = `${pendingOrders} Pesanan / ${lowCount + outCount} Stok`;
+
+      const banner = document.getElementById("stockAlertBanner");
+      if (lowCount > 0 || outCount > 0) {
+        banner.classList.add("show");
+        banner.classList.toggle("critical", outCount > 0);
+        document.getElementById("stockAlertTitle").textContent = `Peringatan Stok: ${outCount} Habis & ${lowCount} Menipis`;
+        const names = state.products
+          .filter(p => getStockStatus(p) !== "ok")
+          .slice(0, 6)
+          .map(p => `${p.name} (sisa ${p.stockSmall} ${p.units.small})`)
+          .join(", ");
+        document.getElementById("stockAlertList").textContent = names;
+      } else {
+        banner.classList.remove("show", "critical");
+      }
+    }
+
+    // --- KASIR POS DENGAN KONVERSI SATUAN OTOMATIS ---
+    function renderPosProducts() {
+      const q = (document.getElementById("posSearchInput").value || "").toLowerCase().trim();
+      const cat = document.getElementById("posCategoryFilter").value;
+      const tier = document.getElementById("posPriceTier").value;
+      const grid = document.getElementById("posProductGrid");
+
+      const list = state.products.filter(p => {
+        const st = getStockStatus(p);
+        const matchCat = cat === "ALL" ? true : cat === "LOW" ? (st !== "ok") : p.category === cat;
+        const matchQ = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      grid.innerHTML = list.map(p => {
+        const st = getStockStatus(p);
+        const needSmall = getSmallFactor(p, tier);
+        const canAdd = p.stockSmall >= needSmall;
+        const unitLabel = getUnitName(p, tier);
+        const priceVal = getUnitSellPrice(p, tier);
+
+        const badge = st === "out"
+          ? `<span class="badge badge-out">Habis</span>`
+          : st === "low"
+            ? `<span class="badge badge-low">Menipis (${p.stockSmall} ${escapeHtml(p.units.small)})</span>`
+            : `<span class="badge badge-ok">${p.stockSmall} ${escapeHtml(p.units.small)}</span>`;
+
+        return `
+          <div class="prod-card ${st === "low" ? "low-stock" : st === "out" ? "out-stock" : ""}">
+            <div>
+              <div style="display:flex; justify-content:space-between; gap:4px; margin-bottom:4px;">
+                <span class="badge badge-cat">${escapeHtml(p.category)}</span>
+                ${badge}
+              </div>
+              <div style="font-weight:700; font-size:0.92rem; margin-bottom:4px;">${escapeHtml(p.name)}</div>
+              <div style="font-size:0.74rem; color:var(--text-muted); margin-bottom:6px;">${escapeHtml(formatStockBreakdown(p))}</div>
+              <div class="price-row"><span>1 ${escapeHtml(p.units.small)}:</span><strong>${formatRp(p.sell.small)}</strong></div>
+              <div class="price-row"><span>1 ${escapeHtml(p.units.medium)}:</span><strong>${formatRp(p.sell.medium)}</strong></div>
+              <div class="price-row"><span>1 ${escapeHtml(p.units.large)}:</span><strong>${formatRp(p.sell.large)}</strong></div>
+            </div>
+            <button type="button" class="btn-gold btn-sm" ${!canAdd ? "disabled" : ""} onclick="addToPosCart('${p.id}')">
+              ${!canAdd ? `Stok Kurang (< ${needSmall} ${escapeHtml(p.units.small)})` : `+ 1 ${escapeHtml(unitLabel)} (${formatRp(priceVal)})`}
+            </button>
+          </div>
+        `;
+      }).join("") || `<p style="color:var(--text-muted);">Barang tidak ditemukan.</p>`;
+    }
+
+    function addToPosCart(prodId) {
+      const prod = state.products.find(p => p.id === prodId);
+      if (!prod) return;
+      const tier = document.getElementById("posPriceTier").value;
+      const smallFactor = getSmallFactor(prod, tier);
+      const alreadyUsedSmall = posCart
+        .filter(c => c.id === prodId)
+        .reduce((s, c) => s + c.qty * c.smallFactor, 0);
+
+      if (alreadyUsedSmall + smallFactor > prod.stockSmall) {
+        alert("Sisa stok tidak mencukupi untuk satuan yang dipilih.");
+        return;
+      }
+
+      const existing = posCart.find(c => c.id === prodId && c.tier === tier);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        posCart.push({
+          id: prod.id,
+          name: prod.name,
+          tier,
+          unitName: getUnitName(prod, tier),
+          smallFactor,
+          price: getUnitSellPrice(prod, tier),
+          hppUnit: getUnitHpp(prod, tier),
+          qty: 1
+        });
+      }
+      renderPosCart();
+    }
+
+    function renderPosCart() {
+      const wrap = document.getElementById("cartItemsList");
+      const delivery = document.getElementById("posDeliverySelect").value;
+      const shipInput = document.getElementById("posShippingFeeInput");
+      if (delivery === "Ambil Sendiri") {
+        shipInput.value = 0;
+        shipInput.disabled = true;
+      } else {
+        shipInput.disabled = false;
+        if (Number(shipInput.value) === 0) shipInput.value = state.merchant.defaultShipping || 0;
+      }
+
+      const shippingFee = delivery === "Diantar" ? Math.max(0, Number(shipInput.value) || 0) : 0;
+
+      if (posCart.length === 0) {
+        wrap.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">Keranjang kasir masih kosong.</p>`;
+        document.getElementById("cartTotalLabel").textContent = formatRp(shippingFee);
+        return;
+      }
+
+      let subtotal = 0;
+      wrap.innerHTML = posCart.map((c, idx) => {
+        const sub = c.price * c.qty;
+        subtotal += sub;
+        return `
+          <div class="cart-item">
+            <div>
+              <strong>${escapeHtml(c.name)}</strong> (${c.qty} ${escapeHtml(c.unitName)})<br/>
+              <small>${c.qty} x ${formatRp(c.price)} = <strong>${formatRp(sub)}</strong></small>
+            </div>
+            <button type="button" class="btn-danger btn-sm" onclick="posCart.splice(${idx},1); renderPosCart();">x</button>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("cartTotalLabel").textContent = formatRp(subtotal + shippingFee);
+    }
+
+    document.getElementById("clearCartBtn").addEventListener("click", () => {
+      posCart = [];
+      renderPosCart();
+    });
+
+    document.getElementById("checkoutBtn").addEventListener("click", () => {
+      if (posCart.length === 0) {
+        alert("Keranjang kasir kosong.");
+        return;
+      }
+      const method = document.getElementById("paymentMethodSelect").value;
+      const customer = (document.getElementById("customerNameInput").value || "").trim() || "Pelanggan Umum";
+      const customerWa = normalizePhone(document.getElementById("customerWaPosInput").value);
+      const deliveryType = document.getElementById("posDeliverySelect").value;
+      const shippingFee = deliveryType === "Diantar"
+        ? Math.max(0, Number(document.getElementById("posShippingFeeInput").value) || 0)
+        : 0;
+
+      if (method === "Hutang" && customer === "Pelanggan Umum") {
+        alert("Masukkan nama pembeli untuk transaksi Hutang.");
+        return;
+      }
+
+      let subtotal = 0;
+      let totalHpp = 0;
+      posCart.forEach(item => {
+        subtotal += item.price * item.qty;
+        totalHpp += item.hppUnit * item.qty;
+        const prod = state.products.find(p => p.id === item.id);
+        if (prod) {
+          prod.stockSmall = Math.max(0, prod.stockSmall - (item.qty * item.smallFactor));
+        }
+      });
+
+      const grandTotal = subtotal + shippingFee;
+      const profit = subtotal - totalHpp;
+
+      const tx = {
+        id: "BON-" + Date.now().toString().slice(-6),
+        time: new Date().toLocaleString("id-ID"),
+        customer,
+        customerWa,
+        deliveryType,
+        address: deliveryType === "Diantar" ? "Diantar sesuai pesanan" : "Ambil Sendiri di Warung",
+        items: posCart.map(i => ({ ...i })),
+        subtotal,
+        shippingFee,
+        grandTotal,
+        profit,
+        status: method === "Hutang" ? "Hutang" : "Tunai"
+      };
+
+      state.transactions.unshift(tx);
+      posCart = [];
+      document.getElementById("customerNameInput").value = "";
+      document.getElementById("customerWaPosInput").value = "";
+      saveState();
+      renderPedagangAll();
+      openReceiptModal(tx.id);
+    });
+
+    // --- PESANAN MASUK DARI PEMBELI + ONGKIR + KONVERSI KE BON LENGKAP ---
+    function renderIncomingOrders() {
+      const tbody = document.getElementById("incomingOrdersBody");
+      if (state.incomingOrders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color:var(--text-muted);">Belum ada pesanan masuk dari aplikasi pembeli.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = state.incomingOrders.map(o => {
+        const itemsText = o.items.map(i => `${escapeHtml(i.name)} (${i.qty} ${escapeHtml(i.unitName)})`).join("<br/>");
+        const isPending = o.status === "Menunggu Konfirmasi";
+        return `
+          <tr>
+            <td><strong>${escapeHtml(o.id)}</strong><br/><small>${escapeHtml(o.time)}</small></td>
+            <td><strong>${escapeHtml(o.customer)}</strong><br/><small>WA: ${escapeHtml(o.customerWa || "-")}</small></td>
+            <td><small>${itemsText}</small></td>
+            <td>
+              <strong>${escapeHtml(o.deliveryType)}</strong><br/>
+              <small>${escapeHtml(o.address || "-")}</small><br/>
+              ${isPending && o.deliveryType === "Diantar"
+                ? `<div style="margin-top:4px;">Ongkir Rp: <input type="number" min="0" value="${o.shippingFee}" style="width:95px; padding:4px 6px;" onchange="updateOrderShipping('${o.id}', this.value)" /></div>`
+                : `<small>Ongkir: ${formatRp(o.shippingFee)}</small>`}
+            </td>
+            <td><strong>${formatRp(o.subtotal + Number(o.shippingFee || 0))}</strong></td>
+            <td>
+              ${isPending
+                ? `<div style="display:flex; flex-direction:column; gap:4px;">
+                    <button type="button" class="btn-gold btn-sm" onclick="approveIncomingOrder('${o.id}', 'Tunai')">Proses &amp; Bon Tunai</button>
+                    <button type="button" class="btn-outline btn-sm" onclick="approveIncomingOrder('${o.id}', 'Hutang')">Proses &amp; Bon Hutang</button>
+                    <button type="button" class="btn-danger btn-sm" onclick="rejectIncomingOrder('${o.id}')">Tolak</button>
+                   </div>`
+                : `<span class="badge ${o.status === "Ditolak" ? "badge-out" : "badge-ok"}">${escapeHtml(o.status)}</span>
+                   ${o.bonId ? `<br/><button type="button" class="btn-outline btn-sm" style="margin-top:4px;" onclick="openReceiptModal('${o.bonId}')">Lihat Bon</button>` : ""}`}
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function updateOrderShipping(orderId, newFee) {
+      const ord = state.incomingOrders.find(o => o.id === orderId);
+      if (!ord) return;
+      ord.shippingFee = Math.max(0, Number(newFee) || 0);
+      saveState();
+      renderIncomingOrders();
+    }
+
+    function approveIncomingOrder(orderId, payStatus) {
+      const ord = state.incomingOrders.find(o => o.id === orderId);
+      if (!ord || ord.status !== "Menunggu Konfirmasi") return;
+
+      for (const item of ord.items) {
+        const prod = state.products.find(p => p.id === item.id);
+        if (!prod || prod.stockSmall < item.qty * item.smallFactor) {
+          alert(`Stok ${item.name} tidak mencukupi untuk memproses pesanan ini.`);
+          return;
+        }
+      }
+
+      let totalHpp = 0;
+      ord.items.forEach(item => {
+        const prod = state.products.find(p => p.id === item.id);
+        const hppUnit = getUnitHpp(prod, item.tier);
+        totalHpp += hppUnit * item.qty;
+        prod.stockSmall = Math.max(0, prod.stockSmall - (item.qty * item.smallFactor));
+      });
+
+      const shippingFee = ord.deliveryType === "Diantar" ? Math.max(0, Number(ord.shippingFee) || 0) : 0;
+      const grandTotal = ord.subtotal + shippingFee;
+      const bonId = "BON-" + Date.now().toString().slice(-6);
+
+      const tx = {
+        id: bonId,
+        time: new Date().toLocaleString("id-ID"),
+        customer: ord.customer,
+        customerWa: ord.customerWa,
+        deliveryType: ord.deliveryType,
+        address: ord.address || "-",
+        items: ord.items.map(i => ({ ...i })),
+        subtotal: ord.subtotal,
+        shippingFee,
+        grandTotal,
+        profit: ord.subtotal - totalHpp,
+        status: payStatus
+      };
+
+      state.transactions.unshift(tx);
+      ord.status = "Dikonfirmasi";
+      ord.bonId = bonId;
+      saveState();
+      renderPedagangAll();
+      openReceiptModal(bonId);
+    }
+
+    function rejectIncomingOrder(orderId) {
+      const ord = state.incomingOrders.find(o => o.id === orderId);
+      if (!ord) return;
+      ord.status = "Ditolak";
+      saveState();
+      renderPedagangAll();
+    }
+
+    // --- INPUT BARANG & SATUAN BERTINGKAT ---
+    document.getElementById("addProductForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("newProdName").value.trim();
+      if (!name) return;
+
+      const medPerLarge = Math.max(1, Number(document.getElementById("newMedPerLarge").value) || 1);
+      const smallPerMed = Math.max(1, Number(document.getElementById("newSmallPerMed").value) || 1);
+      const stockLargeQty = Math.max(0, Number(document.getElementById("newStockLargeQty").value) || 0);
+      const totalSmall = Math.round(stockLargeQty * medPerLarge * smallPerMed);
+
+      const newProd = {
+        id: "PRD-" + Date.now().toString().slice(-5),
+        name,
+        category: document.getElementById("newProdCat").value || "Dan Lainnya",
+        units: {
+          large: document.getElementById("newLargeUnitName").value.trim() || "Besar",
+          medium: document.getElementById("newMedUnitName").value.trim() || "Menengah",
+          small: document.getElementById("newSmallUnitName").value.trim() || "Kecil"
+        },
+        conv: { medPerLarge, smallPerMed },
+        stockSmall: totalSmall,
+        hppLarge: Math.max(0, Number(document.getElementById("newHppLarge").value) || 0),
+        sell: {
+          large: Math.max(0, Number(document.getElementById("newSellLarge").value) || 0),
+          medium: Math.max(0, Number(document.getElementById("newSellMed").value) || 0),
+          small: Math.max(0, Number(document.getElementById("newSellSmall").value) || 0)
+        }
+      };
+
+      state.products.unshift(newProd);
+      saveState();
+      e.target.reset();
+      document.getElementById("newProdCat").value = "Dan Lainnya";
+      renderPedagangAll();
+      alert(`Barang "${name}" berhasil ditambahkan (${totalSmall} ${newProd.units.small}).`);
+    });
+
+    function restockProduct(prodId, tier) {
+      const prod = state.products.find(p => p.id === prodId);
+      if (!prod) return;
+      prod.stockSmall += getSmallFactor(prod, tier);
+      saveState();
+      renderPedagangAll();
+    }
+
+    function renderStockTable() {
+      const tbody = document.getElementById("stockTableBody");
+      tbody.innerHTML = state.products.map(p => {
+        const st = getStockStatus(p);
+        const hppMed = getUnitHpp(p, "medium");
+        const hppSmall = getUnitHpp(p, "small");
+        const badge = st === "out"
+          ? `<span class="badge badge-out">Habis</span>`
+          : st === "low"
+            ? `<span class="badge badge-low">Menipis</span>`
+            : `<span class="badge badge-ok">Aman</span>`;
+
+        return `
+          <tr>
+            <td><strong>${escapeHtml(p.name)}</strong><br/><span class="badge badge-cat">${escapeHtml(p.category)}</span> ${badge}</td>
+            <td><small>1 ${escapeHtml(p.units.large)} = ${p.conv.medPerLarge} ${escapeHtml(p.units.medium)}<br/>1 ${escapeHtml(p.units.medium)} = ${p.conv.smallPerMed} ${escapeHtml(p.units.small)}</small></td>
+            <td><small>${escapeHtml(formatStockBreakdown(p))}</small></td>
+            <td><small>${escapeHtml(p.units.large)}: ${formatRp(p.hppLarge)}<br/>${escapeHtml(p.units.medium)}: ${formatRp(hppMed)}<br/>${escapeHtml(p.units.small)}: ${formatRp(hppSmall)}</small></td>
+            <td><small>${escapeHtml(p.units.large)}: <strong>${formatRp(p.sell.large)}</strong><br/>${escapeHtml(p.units.medium)}: <strong>${formatRp(p.sell.medium)}</strong><br/>${escapeHtml(p.units.small)}: <strong>${formatRp(p.sell.small)}</strong></small></td>
+            <td>
+              <button type="button" class="btn-ok btn-sm" onclick="restockProduct('${p.id}', 'large')">+1 ${escapeHtml(p.units.large)}</button>
+              <button type="button" class="btn-outline btn-sm" onclick="restockProduct('${p.id}', 'medium')">+1 ${escapeHtml(p.units.medium)}</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // --- RIWAYAT & BON LENGKAP ---
+    function settleDebt(txId) {
+      const tx = state.transactions.find(t => t.id === txId);
+      if (!tx || tx.status !== "Hutang") return;
+      tx.status = "Lunas";
+      saveState();
+      renderPedagangAll();
+    }
+
+    function voidTransaction(txId) {
+      const tx = state.transactions.find(t => t.id === txId);
+      if (!tx || tx.status === "Dibatalkan") return;
+      if (!confirm(`Batalkan bon ${tx.id}? Stok barang akan dikembalikan otomatis.`)) return;
+      tx.items.forEach(item => {
+        const prod = state.products.find(p => p.id === item.id);
+        if (prod) prod.stockSmall += (item.qty * item.smallFactor);
+      });
+      tx.status = "Dibatalkan";
+      saveState();
+      renderPedagangAll();
+    }
+
+    function renderHistoryTable() {
+      const q = (document.getElementById("historySearchInput").value || "").toLowerCase().trim();
+      const statusFilter = document.getElementById("historyStatusFilter").value;
+      const tbody = document.getElementById("historyTableBody");
+
+      const list = state.transactions.filter(t => {
+        const matchSt = statusFilter === "ALL" || t.status === statusFilter;
+        const matchQ = !q
+          || t.id.toLowerCase().includes(q)
+          || t.customer.toLowerCase().includes(q)
+          || (t.customerWa || "").includes(q);
+        return matchSt && matchQ;
+      });
+
+      tbody.innerHTML = list.map(t => {
+        const itemsText = t.items.map(i => `${escapeHtml(i.name)} (${i.qty} ${escapeHtml(i.unitName)})`).join(", ");
+        const stBadge = t.status === "Hutang"
+          ? `<span class="badge badge-low">Hutang</span>`
+          : t.status === "Dibatalkan"
+            ? `<span class="badge badge-out">Dibatalkan</span>`
+            : `<span class="badge badge-ok">${escapeHtml(t.status)}</span>`;
+
+        return `
+          <tr>
+            <td><strong>${escapeHtml(t.id)}</strong><br/><small>${escapeHtml(t.time)}</small></td>
+            <td><strong>${escapeHtml(t.customer)}</strong><br/><small>WA: ${escapeHtml(t.customerWa || "-")}</small></td>
+            <td><small>${itemsText}<br/><em>${escapeHtml(t.deliveryType)} (Ongkir: ${formatRp(t.shippingFee)})</em></small></td>
+            <td><strong>${formatRp(t.grandTotal)}</strong></td>
+            <td>${stBadge}</td>
+            <td style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button type="button" class="btn-outline btn-sm" onclick="openReceiptModal('${t.id}')">Bon Lengkap</button>
+              ${t.status === "Hutang" ? `<button type="button" class="btn-ok btn-sm" onclick="settleDebt('${t.id}')">Lunasi</button>` : ""}
+              ${t.status !== "Dibatalkan" ? `<button type="button" class="btn-danger btn-sm" onclick="voidTransaction('${t.id}')">Batal</button>` : ""}
+            </td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="6" style="color:var(--text-muted);">Belum ada bon transaksi.</td></tr>`;
+    }
+
+    function renderKasTable() {
+      const tbody = document.getElementById("kasTableBody");
+      tbody.innerHTML = state.transactions.map(t => `
+        <tr>
+          <td><strong>${escapeHtml(t.id)}</strong></td>
+          <td>${escapeHtml(t.time)}</td>
+          <td>${escapeHtml(t.customer)} (${escapeHtml(t.customerWa || "-")})</td>
+          <td><strong>${formatRp(t.grandTotal)}</strong></td>
+          <td>${formatRp(t.profit || 0)}</td>
+          <td>${escapeHtml(t.status)}</td>
+          <td>
+            ${t.status === "Hutang"
+              ? `<button type="button" class="btn-ok btn-sm" onclick="settleDebt('${t.id}')">Lunasi Hutang</button>`
+              : `<button type="button" class="btn-outline btn-sm" onclick="openReceiptModal('${t.id}')">Lihat Bon</button>`}
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="7" style="color:var(--text-muted);">Belum ada catatan kas.</td></tr>`;
+    }
+
+    // --- PENGATURAN WARUNG & TAUTAN TERHUBUNG KE PEMBELI ---
+    document.getElementById("saveMerchantSettingsBtn").addEventListener("click", () => {
+      state.merchant.storeName = document.getElementById("cfgStoreName").value.trim() || "SATHORIK WARUNG PRO";
+      state.merchant.waNumber = normalizePhone(document.getElementById("cfgMerchantWa").value) || "6281234567890";
+      state.merchant.defaultShipping = Math.max(0, Number(document.getElementById("cfgDefaultShipping").value) || 0);
+      state.merchant.addressNote = document.getElementById("cfgStoreAddress").value.trim();
+      saveState();
+      renderApp();
+      alert("Pengaturan warung & ongkir disimpan.");
+    });
+
+    function updateBuyerShareUrlBox() {
+      const baseUrl = `${window.location.origin}${window.location.pathname}`;
+      const buyerUrl = `${baseUrl}?role=pembeli&mwa=${encodeURIComponent(state.merchant.waNumber)}`;
+      document.getElementById("buyerShareUrlInput").value = buyerUrl;
+      const msg = encodeURIComponent(
+        `Selamat datang di *${state.merchant.storeName}*!\nSilakan lihat katalog & pesan barang langsung melalui tautan berikut:\n${buyerUrl}`
+      );
+      document.getElementById("waShareToBuyerBtn").href = `https://wa.me/?text=${msg}`;
+    }
+
+    document.getElementById("copyBuyerShareUrlBtn").addEventListener("click", () => {
+      const val = document.getElementById("buyerShareUrlInput").value;
+      navigator.clipboard?.writeText(val);
+      alert("Tautan aplikasi pembeli disalin.");
+    });
+
+    document.getElementById("sendSpecificBuyerInviteBtn").addEventListener("click", () => {
+      const targetWa = normalizePhone(document.getElementById("inviteSpecificBuyerWa").value);
+      if (!targetWa) {
+        alert("Masukkan Nomor WhatsApp pembeli terlebih dahulu.");
+        return;
+      }
+      const baseUrl = `${window.location.origin}${window.location.pathname}`;
+      const connectedUrl = `${baseUrl}?role=pembeli&wa=${encodeURIComponent(targetWa)}&mwa=${encodeURIComponent(state.merchant.waNumber)}`;
+      const msg = encodeURIComponent(
+        `Halo, silakan akses katalog & bon transaksi *${state.merchant.storeName}* yang sudah terhubung dengan No. WA Anda:\n${connectedUrl}`
+      );
+      window.open(`https://wa.me/${targetWa}?text=${msg}`, "_blank", "noopener");
+    });
+
+    // --- BON TRANSAKSI LENGKAP (MODAL 58MM) ---
+    function openReceiptModal(txId) {
+      const tx = state.transactions.find(t => t.id === txId);
+      if (!tx) return;
+      const itemsHtml = tx.items.map(i => `
+        <div class="receipt-line">
+          <span>${escapeHtml(i.name)} (${i.qty} ${escapeHtml(i.unitName)})</span>
+          <span>${formatRp(i.price * i.qty)}</span>
+        </div>
+      `).join("");
+
+      document.getElementById("receiptContent").innerHTML = `
+        <div style="text-align:center; font-weight:700;">${escapeHtml(state.merchant.storeName)}</div>
+        <div style="text-align:center; font-size:11px;">BON TRANSAKSI LENGKAP</div>
+        <hr/>
+        <div class="receipt-line"><span>No. Bon:</span><span>${escapeHtml(tx.id)}</span></div>
+        <div class="receipt-line"><span>Waktu:</span><span>${escapeHtml(tx.time)}</span></div>
+        <div class="receipt-line"><span>Pembeli:</span><span>${escapeHtml(tx.customer)}</span></div>
+        <div class="receipt-line"><span>No. WA:</span><span>${escapeHtml(tx.customerWa || "-")}</span></div>
+        <div class="receipt-line"><span>Layanan:</span><span>${escapeHtml(tx.deliveryType)}</span></div>
+        ${tx.deliveryType === "Diantar" ? `<div style="font-size:11px;">Alamat: ${escapeHtml(tx.address || "-")}</div>` : ""}
+        <div class="receipt-line"><span>Status:</span><span><strong>${escapeHtml(tx.status)}</strong></span></div>
+        <hr/>
+        ${linesOrFallback(itemsHtml)}
+        <hr/>
+        <div class="receipt-line"><span>Subtotal:</span><span>${formatRp(tx.subtotal)}</span></div>
+        <div class="receipt-line"><span>Ongkos Kirim:</span><span>${formatRp(tx.shippingFee)}</span></div>
+        <div class="receipt-line" style="font-weight:700; font-size:13px;"><span>TOTAL AKHIR:</span><span>${formatRp(tx.grandTotal)}</span></div>
+        <hr/>
+        <div style="text-align:center; font-size:11px;">${escapeHtml(state.merchant.addressNote || "Terima kasih")}</div>
+      `;
+      document.getElementById("receiptModal").classList.add("open");
+    }
+
+    function linesOrFallback(html) {
+      return html || `<div>-</div>`;
+    }
+
+    function closeReceiptModal() {
+      document.getElementById("receiptModal").classList.remove("open");
+    }
+
+    // --- PEMBELI PORTAL & KATALOG TERHUBUNG ---
+    document.getElementById("buyerConnectBtn").addEventListener("click", () => {
+      const wa = normalizePhone(document.getElementById("buyerWaLoginInput").value);
+      if (!wa) {
+        alert("Masukkan Nomor WhatsApp Anda agar terhubung dengan pesanan & bon transaksi.");
+        return;
+      }
+      const name = (document.getElementById("buyerAliasInput").value || "").trim() || "Pelanggan WA";
+      currentSession = { role: "pembeli", buyerWa: wa, buyerName: name };
+      renderApp();
+    });
+
+    document.getElementById("buyerDirectBrowseBtn").addEventListener("click", () => {
+      currentSession = { role: "pembeli", buyerWa: "", buyerName: "" };
+      renderApp();
+    });
+
+    function openBuyerWaUpdate() {
+      currentSession = null;
+      showOnlySection("buyerPortalSection");
+    }
+
+    function switchBuyerTab(tab) {
+      ["catalog", "receipts"].forEach(id => {
+        document.getElementById(`btab-${id}`).classList.toggle("hidden", id !== tab);
+      });
+      document.querySelectorAll("#pembeliView .nav-pill").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.btab === tab);
+      });
+      if (tab === "receipts") renderBuyerReceipts();
+    }
+
+    function renderPembeliAll() {
+      document.getElementById("buyerBannerStore").textContent = `Terhubung dengan ${state.merchant.storeName}`;
+      document.getElementById("buyerIdentityDisplay").textContent = currentSession.buyerWa
+        ? `Identitas Terhubung: ${currentSession.buyerName || "Pembeli"} (WA: ${currentSession.buyerWa})`
+        : "Mode: Akses Langsung Daftar Barang Tanpa Login";
+
+      if (currentSession.buyerName) document.getElementById("buyerOrderName").value = currentSession.buyerName;
+      if (currentSession.buyerWa) document.getElementById("buyerOrderWa").value = currentSession.buyerWa;
+
+      renderBuyerProducts();
+      renderBuyerCart();
+      renderBuyerReceipts();
+    }
+
+    function renderBuyerProducts() {
+      const q = (document.getElementById("buyerSearchInput").value || "").toLowerCase().trim();
+      const cat = document.getElementById("buyerCategoryFilter").value;
+      const grid = document.getElementById("buyerProductGrid");
+
+      const list = state.products.filter(p => {
+        const matchCat = cat === "ALL" || p.category === cat;
+        const matchQ = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      grid.innerHTML = list.map(p => {
+        const outOfStock = p.stockSmall <= 0;
+        return `
+          <div class="prod-card ${outOfStock ? "out-stock" : ""}">
+            <div>
+              <div style="display:flex; justify-content:space-between; gap:4px; margin-bottom:4px;">
+                <span class="badge badge-cat">${escapeHtml(p.category)}</span>
+                ${outOfStock
+                  ? `<span class="badge badge-out">Stok Habis</span>`
+                  : `<span class="badge badge-ok">Tersedia (${p.stockSmall} ${escapeHtml(p.units.small)})</span>`}
+              </div>
+              <div style="font-weight:700; margin:4px 0;">${escapeHtml(p.name)}</div>
+              <div class="price-row"><span>1 ${escapeHtml(p.units.small)}:</span><strong>${formatRp(p.sell.small)}</strong></div>
+              <div class="price-row"><span>1 ${escapeHtml(p.units.medium)}:</span><strong>${formatRp(p.sell.medium)}</strong></div>
+              <div class="price-row"><span>1 ${escapeHtml(p.units.large)}:</span><strong>${formatRp(p.sell.large)}</strong></div>
+            </div>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button type="button" class="btn-outline btn-sm" ${p.stockSmall < 1 ? "disabled" : ""} onclick="addBuyerCart('${p.id}','small')">+ ${escapeHtml(p.units.small)}</button>
+              <button type="button" class="btn-outline btn-sm" ${p.stockSmall < getSmallFactor(p, "medium") ? "disabled" : ""} onclick="addBuyerCart('${p.id}','medium')">+ ${escapeHtml(p.units.medium)}</button>
+              <button type="button" class="btn-gold btn-sm" ${p.stockSmall < getSmallFactor(p, "large") ? "disabled" : ""} onclick="addBuyerCart('${p.id}','large')">+ ${escapeHtml(p.units.large)}</button>
+            </div>
+          </div>
+        `;
+      }).join("") || `<p style="color:var(--text-muted);">Barang tidak ditemukan.</p>`;
+    }
+
+    function addBuyerCart(prodId, tier) {
+      const prod = state.products.find(p => p.id === prodId);
+      if (!prod) return;
+      const smallFactor = getSmallFactor(prod, tier);
+      const usedSmall = buyerCart.filter(c => c.id === prodId).reduce((s, c) => s + c.qty * c.smallFactor, 0);
+      if (usedSmall + smallFactor > prod.stockSmall) {
+        alert("Jumlah pesanan melebihi stok warung yang tersedia.");
+        return;
+      }
+
+      const found = buyerCart.find(c => c.id === prodId && c.tier === tier);
+      if (found) found.qty += 1;
+      else {
+        buyerCart.push({
+          id: prod.id,
+          name: prod.name,
+          tier,
+          unitName: getUnitName(prod, tier),
+          smallFactor,
+          price: getUnitSellPrice(prod, tier),
+          qty: 1
+        });
+      }
+      renderBuyerCart();
+    }
+
+    function renderBuyerCart() {
+      const wrap = document.getElementById("buyerCartList");
+      const delivery = document.getElementById("buyerDeliveryOption").value;
+      const estShipping = delivery === "Diantar" ? Number(state.merchant.defaultShipping || 0) : 0;
+
+      let subtotal = 0;
+      if (buyerCart.length === 0) {
+        wrap.innerHTML = `<p style="color:var(--text-muted); font-size:0.85rem;">Keranjang belanja masih kosong.</p>`;
+      } else {
+        wrap.innerHTML = buyerCart.map((c, idx) => {
+          const sub = c.price * c.qty;
+          subtotal += sub;
+          return `
+            <div class="cart-item">
+              <div>
+                <strong>${escapeHtml(c.name)}</strong> (${c.qty} ${escapeHtml(c.unitName)})<br/>
+                <small>${c.qty} x ${formatRp(c.price)} = <strong>${formatRp(sub)}</strong></small>
+              </div>
+              <button type="button" class="btn-danger btn-sm" onclick="buyerCart.splice(${idx},1); renderBuyerCart();">x</button>
+            </div>
+          `;
+        }).join("");
+      }
+
+      document.getElementById("buyerSubtotalLabel").textContent = formatRp(subtotal);
+      document.getElementById("buyerShippingLabel").textContent = delivery === "Diantar"
+        ? `${formatRp(estShipping)} (dapat disesuaikan pedagang)`
+        : "Rp0 (Ambil Sendiri)";
+      document.getElementById("buyerTotalLabel").textContent = formatRp(subtotal + estShipping);
+    }
+
+    document.getElementById("submitBuyerOrderBtn").addEventListener("click", () => {
+      if (buyerCart.length === 0) {
+        alert("Pilih minimal 1 barang untuk dipesan.");
+        return;
+      }
+      const customer = (document.getElementById("buyerOrderName").value || "").trim() || "Pembeli Online";
+      const customerWa = normalizePhone(document.getElementById("buyerOrderWa").value || currentSession.buyerWa);
+      const deliveryType = document.getElementById("buyerDeliveryOption").value;
+      const address = (document.getElementById("buyerDeliveryAddress").value || "").trim();
+
+      if (deliveryType === "Diantar" && !address) {
+        alert("Masukkan alamat pengantaran jika memilih opsi Diantar.");
+        return;
+      }
+
+      const subtotal = buyerCart.reduce((s, c) => s + c.price * c.qty, 0);
+      const shippingFee = deliveryType === "Diantar" ? Number(state.merchant.defaultShipping || 0) : 0;
+      const orderId = "ORD-" + Date.now().toString().slice(-6);
+
+      state.incomingOrders.unshift({
+        id: orderId,
+        time: new Date().toLocaleString("id-ID"),
+        customer,
+        customerWa,
+        deliveryType,
+        address: deliveryType === "Diantar" ? address : "Ambil Sendiri di Warung",
+        items: buyerCart.map(i => ({ ...i })),
+        subtotal,
+        shippingFee,
+        status: "Menunggu Konfirmasi",
+        bonId: null
+      });
+
+      if (customerWa && currentSession) {
+        currentSession.buyerWa = customerWa;
+        currentSession.buyerName = customer;
+      }
+
+      saveState();
+
+      const lines = buyerCart.map(c => `- ${c.name} (${c.qty} ${c.unitName}) = ${formatRp(c.price * c.qty)}`).join("\n");
+      const waText = encodeURIComponent(
+        `Halo *${state.merchant.storeName}*, ada pesanan baru (${orderId}):\n` +
+        `Pembeli: *${customer}* (${customerWa || "Tanpa WA"})\n` +
+        `Layanan: *${deliveryType}*\n` +
+        (deliveryType === "Diantar" ? `Alamat: ${address}\n` : "") +
+        `\nRincian Barang:\n${lines}\n\n` +
+        `Subtotal: ${formatRp(subtotal)}\n` +
+        `Estimasi Ongkir: ${formatRp(shippingFee)}\n` +
+        `Total Estimasi: *${formatRp(subtotal + shippingFee)}*`
+      );
+
+      buyerCart = [];
+      renderPembeliAll();
+
+      const merchantWa = normalizePhone(state.merchant.waNumber) || "6281234567890";
+      window.open(`https://wa.me/${merchantWa}?text=${waText}`, "_blank", "noopener");
+    });
+
+    function renderBuyerReceipts() {
+      const tbody = document.getElementById("buyerReceiptsBody");
+      const myWa = normalizePhone(currentSession?.buyerWa || document.getElementById("buyerOrderWa").value);
+
+      const list = myWa
+        ? state.transactions.filter(t => normalizePhone(t.customerWa) === myWa)
+        : state.transactions;
+
+      document.getElementById("buyerReceiptFilterNote").textContent = myWa
+        ? `Bon transaksi terhubung untuk No. WA ${myWa}`
+        : "Hubungkan No. WA Anda untuk memfilter bon pribadi secara otomatis";
+
+      tbody.innerHTML = list.map(t => {
+        const itemsText = t.items.map(i => `${escapeHtml(i.name)} (${i.qty} ${escapeHtml(i.unitName)})`).join(", ");
+        return `
+          <tr>
+            <td><strong>${escapeHtml(t.id)}</strong><br/><small>${escapeHtml(t.time)}</small></td>
+            <td><small>${itemsText}</small></td>
+            <td><small>${escapeHtml(t.deliveryType)} (Ongkir: ${formatRp(t.shippingFee)})</small></td>
+            <td><strong>${formatRp(t.grandTotal)}</strong></td>
+            <td><span class="badge ${t.status === "Hutang" ? "badge-low" : t.status === "Dibatalkan" ? "badge-out" : "badge-ok"}">${escapeHtml(t.status)}</span></td>
+            <td><button type="button" class="btn-outline btn-sm" onclick="openReceiptModal('${t.id}')">Buka Bon Lengkap</button></td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="6" style="color:var(--text-muted);">Belum ada bon transaksi yang terkonfirmasi.</td></tr>`;
+    }
+
+    // --- EVENT LISTENERS UMUM ---
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      currentSession = null;
+      window.history.replaceState({}, document.title, window.location.pathname);
+      renderApp();
+    });
+
+    document.getElementById("themeSelect").addEventListener("change", (e) => {
+      state.theme = e.target.value;
+      saveState();
+      document.body.setAttribute("data-theme", state.theme);
+    });
+
+    document.getElementById("minStockThresholdInput").addEventListener("change", (e) => {
+      state.minStockThreshold = Math.max(1, Number(e.target.value) || 10);
+      saveState();
+      renderPedagangAll();
+    });
+
+    ["posSearchInput", "posCategoryFilter", "posPriceTier"].forEach(id => {
+      document.getElementById(id).addEventListener("input", renderPosProducts);
+      document.getElementById(id).addEventListener("change", renderPosProducts);
+    });
+
+    ["posDeliverySelect", "posShippingFeeInput"].forEach(id => {
+      document.getElementById(id).addEventListener("input", renderPosCart);
+      document.getElementById(id).addEventListener("change", renderPosCart);
+    });
+
+    ["historySearchInput", "historyStatusFilter"].forEach(id => {
+      document.getElementById(id).addEventListener("input", renderHistoryTable);
+      document.getElementById(id).addEventListener("change", renderHistoryTable);
+    });
+
+    ["buyerSearchInput", "buyerCategoryFilter"].forEach(id => {
+      document.getElementById(id).addEventListener("input", renderBuyerProducts);
+      document.getElementById(id).addEventListener("change", renderBuyerProducts);
+    });
+
+    document.getElementById("buyerDeliveryOption").addEventListener("change", renderBuyerCart);
+
+    initRouting();
+  </script>
+</body>
+</html>
